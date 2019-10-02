@@ -1,6 +1,10 @@
 # Hexo生成工具
 
-本工具可以从Git仓库中更新Hexo源文件，并生成静态文件发送到目标服务器。
+本工具可以从Git仓库中更新Hexo源文件，并生成静态文件发送到目标服务器。根据设置的间隔时间，系统将会自动地从Git仓库更新文件，如果有更新，就会生成新的静态文件，并替换掉旧的文件。
+
+简而言之，当第一次部署完毕之后，用户只需要将写好的博客git push到自己的仓库中即可。
+
+下面范例将说明如何Github上的仓库qihexiang/xware.buctsnc.cn生成到xware.buctsnc.cn服务器（Ubuntu）的/var/www/xware目录。
 
 ## 使用
 
@@ -19,25 +23,37 @@ docker run -i --name XWARE \
 -e REPO_NAME=[Git仓库的名称，例如xware.git] \
 -e TARGET_SRV=[目标服务器SSH登录信息] \
 -e TARGET_DIR=[目标服务器上的目标目录] \
--e SELINUX=[on|off]
+-e SELINUX=[on|off] \
 xware:latest
 ```
 
 > Windows不支持折行语法，请在同一行内输入全部内容
 
-启动后，系统会自动生成SSH密钥对，将显示的公钥安装到Git仓库和目标服务器即可。
+启动后，系统会自动生成SSH密钥对，将显示的公钥安装到Git仓库和目标服务器即可。第一次传输完成后，可以按Ctrl+C分离Docker界面。
 
-目标服务器上的目标目录（需要提前建好）需要登陆用户具有写入权限，同时要确认正确的SELinux（如果开启）上下文，例如xware@xware.buctsnc.cn上，应是这样：
+## 远程服务器设置
 
+对于远程的Web服务器，需要进行一些设置来保证自动化部署和安全。
+
+1. 创建用户，建议为本服务创建单独的用户，并且设置非密码登录，来提高安全性。
+2. 配置目标目录的安全属性，包括DAC属性和MAC属性（SELinux），保证下面两点：
+   - 用户对目录有写入的能力
+   - 服务器对目录有读取的能力
+
+操作示范：
+
+```bash
+$ sudo useradd -m xware
+$ sudo -u xware bash
+$ cd /home/xware
+$ echo $SSH_PUBLIC_KEY >> .ssh/authorized_keys
+$ exit
+$ sudo mkdir /var/www/xware
+$ sudo chown xware:nginx /var/www/xware
+$ sudo restorecon -R /var/www/*
 ```
-drwxr-xr-x. 10 xware nginx unconfined_u:object_r:httpd_sys_content_t:s0 152 Oct  1 07:33 xware
-```
-
-第一次传输完成后，可以按Ctrl+C分离Docker界面。
 
 ## 环境变量表
-
-范例：将Github上的仓库qihexiang/xware.buctsnc.cn生成到xware.buctsnc.cn服务器（Ubuntu）的/var/www/xware目录。
 
 变量名|意义|值类型|默认值|范例
 ---|---|---|---|---
