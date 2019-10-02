@@ -37,7 +37,7 @@ drwxr-xr-x. 10 xware nginx unconfined_u:object_r:httpd_sys_content_t:s0 152 Oct 
 
 ## 环境变量表
 
-范例：将Github上的仓库qihexiang/hexo生成到xware.buctsnc.cn服务器（Ubuntu）的/var/www/xware目录。
+范例：将Github上的仓库qihexiang/xware.buctsnc.cn生成到xware.buctsnc.cn服务器（Ubuntu）的/var/www/xware目录。
 
 变量名|意义|值类型|默认值|范例
 ---|---|---|---|---
