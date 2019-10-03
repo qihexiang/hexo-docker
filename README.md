@@ -11,20 +11,20 @@
 构建（需要使用网络）：
 
 ```bash
-docker build -t xware .
+docker build -t hexo-docker .
 ```
 
 运行（首次生成需要网络）：
 
 ```bash
 docker run -i --name XWARE \
--e INTERNAL_TIME=[检查间隔时间] \
--e REPO_URL=[Git仓库所在服务器SSH登录信息] \
--e REPO_NAME=[Git仓库的名称，例如xware.git] \
--e TARGET_SRV=[目标服务器SSH登录信息] \
--e TARGET_DIR=[目标服务器上的目标目录] \
--e SELINUX=[on|off] \
-xware:latest
+-e INTERNAL_TIME=600 \
+-e REPO_URL=git@github.com \
+-e REPO_NAME=qihexiang/xware.buctsnc.cn.git \
+-e TARGET_SRV=xware@xware.buctsnc.cn \
+-e TARGET_DIR=/var/www/xware \
+-e SELINUX=on \
+hexo-docker:latest
 ```
 
 > Windows不支持折行语法，请在同一行内输入全部内容
@@ -60,8 +60,8 @@ $ sudo restorecon -R /var/www/*
 
 变量名|意义|值类型|默认值|范例
 ---|---|---|---|---
-INTERNAL_TIME|两次检查间隔的时间（秒）|浮点数/整型数|60|60
-SELINUX|SELinux状态|on/off|off|off
+INTERNAL_TIME|两次检查间隔的时间（秒）|浮点数/整型数|60|600
+SELINUX|SELinux状态|on/off|off|on
 REPO_URL|Git仓库所在服务器的SSH地址|字符串|无|git@github.com
 REPO_NAME|Git仓库所在的路径|字符串|无|qihexiang/xware.buctsnc.cn.git
 TARGET_SRV|目标服务器的SSH地址|字符串|无|xware@xware.buctsnc.cn
