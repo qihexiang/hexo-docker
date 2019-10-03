@@ -46,7 +46,10 @@ xware:latest
 $ sudo useradd -m xware
 $ sudo -u xware bash
 $ cd /home/xware
+$ mkdir .ssh
 $ echo $SSH_PUBLIC_KEY >> .ssh/authorized_keys
+$ find . -type d -exec chmod 700 {} \;
+$ find . -type f -exec chmod 600 {} \;
 $ exit
 $ sudo mkdir /var/www/xware
 $ sudo chown xware:nginx /var/www/xware
