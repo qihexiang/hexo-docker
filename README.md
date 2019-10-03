@@ -4,7 +4,7 @@
 
 简而言之，当第一次部署完毕之后，用户只需要将写好的博客git push到自己的仓库中即可。
 
-下面范例将说明如何Github上的仓库qihexiang/xware.buctsnc.cn生成到xware.buctsnc.cn服务器（Ubuntu）的/var/www/xware目录。
+下面范例将说明如何Github上的仓库qihexiang/xware.buctsnc.cn生成到xware.buctsnc.cn服务器的/var/www/xware目录。
 
 ## 使用
 
