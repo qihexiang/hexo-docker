@@ -63,3 +63,5 @@ REPO_URL|Git仓库所在服务器的SSH地址|字符串|无|git@github.com
 REPO_NAME|Git仓库所在的路径|字符串|无|qihexiang/xware.buctsnc.cn.git
 TARGET_SRV|目标服务器的SSH地址|字符串|无|xware@xware.buctsnc.cn
 TARGET_DIR|目标服务器目录|字符串|无|/var/www/xware
+
+> 两处SSH地址的标准写法都是`ssh://username@hostname:port/`，当端口号为22时，可以写作`username@hostname`形式。如果提示无法正常解析地址，可以把主机名更换为IP地址。注意要避免使用localhost/127.0.0.1/::1这样的本地环回地址，防止指代不明。
