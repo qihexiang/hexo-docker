@@ -10,4 +10,6 @@ RUN npm install yarn -g --registry=https://registry.npm.taobao.org/ \
 
 COPY autogen.sh /bin/autogen.sh
 
+EXPOSE 4000
+
 CMD [ "/bin/bash","/bin/autogen.sh" ]

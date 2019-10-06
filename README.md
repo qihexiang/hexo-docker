@@ -1,70 +1,41 @@
-# Hexo生成工具
+# Hexo in Docker
 
-本工具可以从Git仓库中更新Hexo源文件，并生成静态文件发送到目标服务器。根据设置的间隔时间，系统将会自动地从Git仓库更新文件，如果有更新，就会生成新的静态文件，并替换掉旧的文件。
+自动通过Git拉取Hexo的Git仓库，并使用NodeJS服务器作为后端在4000端口上提供Hexo的Web服务。
 
-简而言之，当第一次部署完毕之后，用户只需要将写好的博客git push到自己的仓库中即可。
+## 使用方法
 
-下面范例将说明如何Github上的仓库qihexiang/xware.buctsnc.cn生成到xware.buctsnc.cn服务器的/var/www/xware目录。
+假设Git仓库在gitlab.buctsnc.cn/root/xware.buctsnc.cn.git
 
-## 使用
-
-构建（需要使用网络）：
+构建镜像：
 
 ```bash
 docker build -t hexo-docker .
 ```
 
-运行（首次生成需要网络）：
+或者从某个registry拉取：
 
 ```bash
-docker run -i --name XWARE \
+docker pull localhost:5000/hexo-docker
+```
+
+启动容器：
+
+```bash
+docker run -i \
+--name hexo-docker \
+-e REPO_URL="ssh://git@gitlab.buctsnc.cn" \
+-e REPO_NAME="root/xware.buctsnc.cn.git" \
 -e INTERNAL_TIME=600 \
--e REPO_URL=git@github.com \
--e REPO_NAME=qihexiang/xware.buctsnc.cn.git \
--e TARGET_SRV=xware@xware.buctsnc.cn \
--e TARGET_DIR=/var/www/xware \
--e SELINUX=on \
-hexo-docker:latest
+-p 127.0.0.1:4000:4000
+localhost:5000/hexo-docker:latest
 ```
 
-> Windows不支持折行语法，请在同一行内输入全部内容
-
-启动后，系统会自动生成SSH密钥对，将显示的公钥安装到Git仓库和目标服务器即可。第一次传输完成后，可以按Ctrl+C分离Docker界面。
-
-## 远程服务器设置
-
-对于远程的Web服务器，需要进行一些设置来保证自动化部署和安全。
-
-1. 创建用户，建议为本服务创建单独的用户，并且设置非密码登录，来提高安全性。
-2. 配置目标目录的安全属性，包括DAC属性和MAC属性（SELinux），保证下面两点：
-   - 用户对目录有写入的能力
-   - 服务器对目录有读取的能力
-
-操作示范：
-
-```bash
-$ sudo useradd -m xware
-$ sudo -u xware bash
-$ cd /home/xware
-$ mkdir .ssh
-$ echo $SSH_PUBLIC_KEY >> .ssh/authorized_keys
-$ find . -type d -exec chmod 700 {} \;
-$ find . -type f -exec chmod 600 {} \;
-$ exit
-$ sudo mkdir /var/www/xware
-$ sudo chown xware:nginx /var/www/xware
-$ sudo restorecon -R /var/www/*
-```
+然后使用反向代理将127.0.0.1:4000端口映射出去即可。
 
 ## 环境变量表
 
-变量名|意义|值类型|默认值|范例
+变量名|含义|格式|默认值|例子
 ---|---|---|---|---
-INTERNAL_TIME|两次检查间隔的时间（秒）|浮点数/整型数|60|600
-SELINUX|SELinux状态|on/off|off|on
-REPO_URL|Git仓库所在服务器的SSH地址|字符串|无|git@github.com
-REPO_NAME|Git仓库所在的路径|字符串|无|qihexiang/xware.buctsnc.cn.git
-TARGET_SRV|目标服务器的SSH地址|字符串|无|xware@xware.buctsnc.cn
-TARGET_DIR|目标服务器目录|字符串|无|/var/www/xware
-
-> 两处SSH地址的标准写法都是`ssh://username@hostname:port/`，当端口号为22时，可以写作`username@hostname`形式。如果提示无法正常解析地址，可以把主机名更换为IP地址。注意要避免使用localhost/127.0.0.1/::1这样的本地环回地址，防止指代不明。
+REPO_URL|Git仓库的SSH地址|ssh://username@hostname|无|ssh://git@gitlab.buctsnc.cn
+REPO_NAME|Git仓库的完整名称|path/to/git/repo.git|无|root/xware.buctsnc.cn
+INTERNAL_TIME|两次同步的间隔时间（秒）|精确到毫秒|60|600
