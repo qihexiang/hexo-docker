@@ -6,7 +6,8 @@ RUN sed -i "s#archive.ubuntu.com#mirrors.tuna.tsinghua.edu.cn#g;s#security.ubunt
 && apt clean
 
 RUN npm install yarn -g --registry=https://registry.npm.taobao.org/ \
-&& yarn global add hexo-cli --registry https://registry.npm.taobao.org/ 
+&& yarn config set registry https://registry.npm.taobao.org \
+&& yarn global add hexo-cli 
 
 COPY autogen.sh /bin/autogen.sh
 
