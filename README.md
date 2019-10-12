@@ -1,6 +1,6 @@
 # Hexo in Docker
 
-自动通过Git拉取Hexo的Git仓库，并使用NodeJS服务器作为后端在4000端口上提供Hexo的Web服务。
+自动通过Git拉取Hexo的Git仓库，自动生成静态文件后通过Nginx从4000端口提供访问。
 
 ## 使用方法
 
