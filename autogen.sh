@@ -1,11 +1,22 @@
 #!/bin/bash
 # autogen.sh
-# Dependencies: nodejs, yarn, hexo, md5sum, git.
+# Dependencies: nodejs, yarn, hexo, git, nginx.
 
 cd ~
 
+nginx
+
+if [ ! $REPO_NAME ] || [ ! $REPO_URL ]; then
+    echo "Please give full information of the repo."
+    exit 1
+fi
+
 if [ ! $INTERNAL_TIME ]; then
     INTERNAL_TIME=60
+fi
+
+if [ ! $BRANCH ]; then
+    BRANCH="master"
 fi
 
 ssh -o StrictHostKeyChecking=no -o PasswordAuthentication=no -N $REPO_URL 
@@ -24,10 +35,12 @@ else
     cat ~/.ssh/id_rsa.pub
 fi
 
+cd /var/www/html
+
 # 若不存在目录，则创建并进行第一次拉取和安装
 if [ ! -d hexo ]; then
     echo "First Running this Program."
-    git clone $REPO_URL/$REPO_NAME hexo
+    git clone -b $BRANCH $REPO_URL/$REPO_NAME hexo
     cd hexo
     yarn install
 # 否则，进入目录
@@ -35,18 +48,25 @@ else
     cd hexo
 fi
 
-hexo server &
+hexo clean
+hexo generate
+chown -R www-data public
 
 while true
 do
-    git pull
-    result=$(md5sum .git/refs/heads/master | cut -d " " -f 1)
+    git pull 2>/dev/null
+    result=$(cat .git/refs/heads/$BRANCH)
     if [ ! $md5 ]; then
         md5=$result
     fi
     if [ $md5 != $result ]; then
-        echo "Updating Content"
+        echo "Updating Content at $(date)"
+        hexo clean
+        hexo generate
+        nginx -s reload
         md5=$result
+    else
+        echo "Checked at $(date)"
     fi
     sleep $INTERNAL_TIME\s
 done

@@ -1,0 +1,11 @@
+version: '3'
+services:
+  hexo-docker:
+    build: .
+    ports:
+      - 127.0.0.1:4000:4000
+    environment:
+      REPO_URL: "ssh://git@gitlab.buctsnc.cn"
+      REPO_NAME: "sysadmin/xware.buctsnc.cn.git"
+      BRANCH: "master"
+      INTERNAL_TIME: "60"
