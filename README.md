@@ -12,12 +12,6 @@
 docker build -t hexo-docker .
 ```
 
-或者从某个registry拉取：
-
-```bash
-docker pull localhost:5000/hexo-docker
-```
-
 启动容器：
 
 ```bash
