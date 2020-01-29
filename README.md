@@ -9,6 +9,8 @@
 构建镜像：
 
 ```bash
+git clone https://github.com/qihexiang/hexo-docker.git
+cd hexo docker
 docker build -t hexo-docker .
 ```
 
@@ -22,7 +24,7 @@ docker run -i \
 -e BRANCH="master" \
 -e INTERNAL_TIME=600 \
 -p 127.0.0.1:4000:4000
-localhost:5000/hexo-docker:latest
+hexo-docker:latest
 ```
 
 然后使用反向代理将127.0.0.1:4000端口映射出去即可。
@@ -34,4 +36,4 @@ localhost:5000/hexo-docker:latest
 REPO_URL|Git仓库的SSH地址|ssh://username@hostname|无|ssh://git@gitlab.buctsnc.cn
 REPO_NAME|Git仓库的完整名称|path/to/git/repo.git|无|root/xware.buctsnc.cn
 BRANCH|Git仓库分支|branch-name|master|master
-INTERNAL_TIME|两次同步的间隔时间（秒）|精确到毫秒|60|600
+INTERNAL_TIME|两次同步的间隔时间（秒）|可以精确到毫秒|60|600.00
